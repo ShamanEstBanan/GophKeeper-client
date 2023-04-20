@@ -19,3 +19,10 @@ type RecordBankCard struct {
 	ExpiredDate string `json:"expiredDate"`
 	CVV         string `json:"CVV"`
 }
+
+const (
+	RecordTypePassword   = "password"
+	RecordTypeBankCard   = "bank_card"
+	RecordTypeTextString = "text_string"
+	RecordTypeByteString = "byte_string"
+)

@@ -26,9 +26,11 @@ func SignUp(login, password string) error {
 		Login:    login,
 		Password: password,
 	}
+	err = saveMasterPass(password)
 	_, err = c.SignUp(context.Background(), req)
 	if err != nil {
 		fmt.Println("Error sign up:", err)
+		defer removeMasterPass()
 		return err
 	}
 
@@ -50,7 +52,6 @@ func Login(login, password string) {
 		Password: password,
 	}
 	var header metadata.MD
-
 	_, err = c.LogIn(context.Background(), req, grpc.Header(&header))
 	if err != nil {
 		return

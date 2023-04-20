@@ -3,6 +3,7 @@ package client
 import (
 	"GophKeeper-client/internal/config"
 	"context"
+	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
@@ -37,6 +38,24 @@ func buildContextWithToken() (*context.Context, error) {
 	return &ctx, nil
 }
 
+func saveMasterPass(password string) error {
+	encryptKey := sha256.Sum256([]byte(password))
+	cfg := config.GetConfig()
+	passwordFile := cfg.Directory + "/master_key"
+	if err := os.WriteFile(passwordFile, encryptKey[:], 0777); err != nil {
+		return err
+	}
+	return nil
+}
+func removeMasterPass() error {
+	cfg := config.GetConfig()
+	passwordFile := cfg.Directory + "/master_key"
+
+	if err := os.Remove(passwordFile); err != nil {
+		return err
+	}
+	return nil
+}
 func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	// Load certificate of the CA who signed server's certificate
 	pemServerCA, err := ioutil.ReadFile("cert/ca-cert.pem")
